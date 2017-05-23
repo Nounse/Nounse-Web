@@ -1,0 +1,7 @@
+{
+  "name": "Nounse",
+  "short_name": "Nounse",
+  "description": "The nounse website",
+  "start_url": "/",
+  "display": "standalone"
+}

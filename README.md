@@ -1,2 +1,6 @@
-# Website
-The nounse website (Firebase Hosted)
+# Nounse
+
+```sh
+polymer build
+firebase deploy
+```

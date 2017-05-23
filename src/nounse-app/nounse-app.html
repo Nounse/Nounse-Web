@@ -1,0 +1,32 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="Nounse-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class NounseApp extends Polymer.Element {
+      static get is() { return 'Nounse-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'Nounse-app'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(NounseApp.is, NounseApp);
+  </script>
+</dom-module>
