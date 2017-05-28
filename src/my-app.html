@@ -22,6 +22,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="my-icons.html">
 
+<link rel="import" href="managers/auth-manager.html">
+
+<link rel="lazy-import" href="login-view.html">
+
 <link rel="lazy-import" href="my-view1.html">
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
@@ -94,15 +98,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-bottom: 100px;
         padding: 10px;
       }
+
+      .no-auth {
+        background-color: white;
+        color: black
+      }
     </style>
 
     <app-location route="{{route}}" use-hash-as-path></app-location>
     <app-route route="{{route}}" pattern="[[rootPattern]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
+    <auth-manager authenticated="{{authenticated}}"></auth-manager>
+
     <!-- Main content -->
     <app-header-layout fullbleed>
 
-      <app-header slot="header" fixed condenses effects="waterfall">
+      <app-header slot="header" fixed condenses effects="waterfall" 
+        class$="{{_getLoginClass(authenticated)}}">
         <app-toolbar>
           <div class="logo">
             <img src="images/logo/nounse-small.png" alt="Nounse Logo">
@@ -112,15 +124,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header>
 
       <div class="content">
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <!--<iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="view1" href="#/view1">View One</a>
           <a name="view2" href="#/view2">View Two</a>
           <a name="view3" href="#/view3">View Three</a>
-        </iron-selector>
+        </iron-selector>-->
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-view1 name="view1"></my-view1>
           <my-view2 name="view2"></my-view2>
           <my-view3 name="view3"></my-view3>
+          <login-view name="login"></login-view>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
       </div>
@@ -138,6 +151,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties() {
         return {
+          authenticated: {
+            type: Boolean,
+            notify: true
+          },
           page: {
             type: String,
             reflectToAttribute: true,
@@ -169,6 +186,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (page === undefined) {
           return;
         }
+        console.log('page',page);
+
+        if (!this.authenticated) {
+          this.page = 'login';
+          return;
+        }
 
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
@@ -180,9 +203,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // }
       }
 
+      _getLoginClass() {
+        if (this.authenticated) {
+          return '';
+        }
+        return 'no-auth';
+      }
+
+
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        let resolvedPageUrl;
+        if (page !== 'login'){
+          resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        } else {
+          resolvedPageUrl = this.resolveUrl( 'login-view' + '.html');
+        }
+        
+
         Polymer.importHref(
           resolvedPageUrl,
           null,

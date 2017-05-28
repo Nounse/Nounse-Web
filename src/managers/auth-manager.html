@@ -1,0 +1,87 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+
+<dom-module id="auth-manager">
+    <template>
+        <style>
+             :host {
+                display: none;
+            }
+        </style>
+
+        <div class="">
+
+        </div>
+    </template>
+    <script>
+        "use strict";
+
+        class AuthManager extends Polymer.Element {
+            static get is() {
+                return 'auth-manager';
+            }
+            static get properties() {
+                return {
+                    authenticated: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    username: {
+                        type: String,
+                        notify: true
+                    },
+                    photoURL: {
+                        type: String,
+                        notify: true
+                    }
+                };
+            }
+
+            ready() {
+                super.ready();
+
+                if (firebase.auth().currentUser) {
+                    this.authenticated = true;
+                }
+                
+
+                window.addEventListener('login-with-google',e => {
+                    this._loginWithGoogle();
+                });
+
+            }
+
+            _loginWithGoogle() {
+                let self = this;
+
+                console.log("I want to log in with google");
+                var provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider).then(function (result) {
+                    // This gives you a Google Access Token. You can use it to access the Google API.
+                    var token = result.credential.accessToken;
+                    // The signed-in user info.
+                    var user = result.user.displayName;
+                    console.log('logged in as', user);
+                    debugger;
+
+                    self.authenticated = true;
+                    self.username = result.user.displayName;
+                    self.photoUrl = result.user.photoURL;
+                    // ...
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                });
+            }
+        }
+
+        window.customElements.define(AuthManager.is, AuthManager);
+    </script>
+</dom-module>
