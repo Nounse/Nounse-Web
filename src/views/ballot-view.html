@@ -1,0 +1,26 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<dom-module id="ballot-view">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        
+        <div>
+            This is a ballot view
+        </div>
+    </template>
+
+    <script>
+        'use strict';
+
+        class BallotView extends Polymer.Element {
+            static get is() {
+                return 'ballot-view';
+            }
+        }
+
+        window.customElements.define(BallotView.is, BallotView);
+    </script>
+</dom-module>
