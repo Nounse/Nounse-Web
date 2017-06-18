@@ -1,6 +1,14 @@
 {
-    "hosting": {
-        "public": "build/default",
-        "ignore": []
-    }
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "hosting": {
+    "public": "build/default",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }
